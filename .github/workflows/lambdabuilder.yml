@@ -39,5 +39,5 @@ jobs:
     - name: Set environment variables
       run: |
         aws lambda update-function-configuration \
-          --function-name lambda-request-builder \
+          --function-name report-request-builder \
           --environment "Variables={SUPERSET_DOMAIN=${{ secrets.SUPERSET_DOMAIN }},SUPERSET_USERNAME=${{ secrets.SUPERSET_USERNAME }},SUPERSET_PASSWORD=${{ secrets.SUPERSET_PASSWORD }}}"
