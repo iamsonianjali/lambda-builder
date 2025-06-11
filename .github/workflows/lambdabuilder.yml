@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.12  # or 3.12 if used in Lambda
+        python-version: 3.13  # or 3.12 if used in Lambda
 
     - name: Package Lambda function
       run: |
