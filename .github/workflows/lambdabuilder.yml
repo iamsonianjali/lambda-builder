@@ -1,0 +1,43 @@
+name: Deploy Lambda Request Builder
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Lambda to AWS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12  # or 3.12 if used in Lambda
+
+    - name: Package Lambda function
+      run: |
+        zip -r lambda_function.zip . -x ".git/*" ".github/*"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1  # Update region if needed
+
+    - name: Deploy Lambda code
+      run: |
+        aws lambda update-function-code \
+          --function-name lambda-request-builder \
+          --zip-file fileb://lambda_function.zip
+
+    - name: Set environment variables
+      run: |
+        aws lambda update-function-configuration \
+          --function-name lambda-request-builder \
+          --environment "Variables={SUPERSET_DOMAIN=${{ secrets.SUPERSET_DOMAIN }},SUPERSET_USERNAME=${{ secrets.SUPERSET_USERNAME }},SUPERSET_PASSWORD=${{ secrets.SUPERSET_PASSWORD }}}"
